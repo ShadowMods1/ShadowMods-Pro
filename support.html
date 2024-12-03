@@ -74,6 +74,53 @@
         text-transform: uppercase;
       }
 
+      p {
+        font-size: 1.2rem;
+        line-height: 1.5;
+      }
+
+      form {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      form input,
+      form textarea {
+        width: 100%;
+        max-width: 600px;
+        padding: 10px;
+        border: 1px solid #00bcd4;
+        border-radius: 4px;
+        background: #2a2a2a;
+        color: #e0e0e0;
+        font-size: 1rem;
+      }
+
+      form input::placeholder,
+      form textarea::placeholder {
+        color: #999;
+      }
+
+      form input[type="submit"] {
+        background: #00bcd4;
+        color: #121212;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        border: none;
+      }
+
+      form input[type="submit"]:hover {
+        background: #0097a7;
+      }
+
       footer {
         font-size: 1rem;
         color: #e0e0e0;
@@ -91,9 +138,23 @@
     </nav>
 
     <div class="content">
-      <h1>Need Help?</h1>
-      <p>If you're experiencing issues or have any questions, feel free to contact us.</p>
-      <p>Our support team is here to assist you with any problems you may face.</p>
+      <h1>Contact Us</h1>
+      <p>
+        Feel free to reach out to us with any questions, feedback, or support
+        requests. Our team is here to help you!
+      </p>
+
+      <form action="https://formspree.io/f/xanynolr" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          rows="5"
+          required
+        ></textarea>
+        <input type="submit" value="Send Message" />
+      </form>
     </div>
 
     <footer>&copy; 2024 ShadowMods Pro. All rights reserved.</footer>
@@ -101,21 +162,21 @@
     <script>
       // Ensure the footer is at the bottom
       function adjustFooter() {
-        const footer = document.querySelector('footer');
+        const footer = document.querySelector("footer");
         const bodyHeight = document.body.offsetHeight;
         const viewportHeight = window.innerHeight;
-        
+
         if (bodyHeight < viewportHeight) {
-          footer.style.position = 'absolute';
-          footer.style.bottom = '0';
-          footer.style.width = '100%';
+          footer.style.position = "absolute";
+          footer.style.bottom = "0";
+          footer.style.width = "100%";
         } else {
-          footer.style.position = 'static';
+          footer.style.position = "static";
         }
       }
 
-      window.addEventListener('resize', adjustFooter);
-      window.addEventListener('load', adjustFooter);
+      window.addEventListener("resize", adjustFooter);
+      window.addEventListener("load", adjustFooter);
     </script>
   </body>
 </html>
