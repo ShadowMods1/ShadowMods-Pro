@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShadowMods Pro | Payment</title>
+    <link
+      rel="icon"
+      href="https://i.postimg.cc/y87h3x7y/0dc15569002a714e09ef3b03da9ac43d-removebg-preview.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #121212;
+      }
+
+      nav {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.1rem;
+      }
+
+      nav a {
+        color: #00bcd4;
+        text-decoration: none;
+        margin-left: 15px;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      nav a:hover {
+        color: #0097a7;
+      }
+
+      .content {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+      }
+
+      h1 {
+        color: #00bcd4;
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+
+      .payment-container {
+        background: #1e1e1e;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 188, 212, 0.5);
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .payment-container p {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+
+      .payment-btn {
+        padding: 15px;
+        background: #000000;
+        color: #fff;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .payment-btn:hover {
+        background: #333333;
+      }
+
+      footer {
+        font-size: 1rem;
+        color: #e0e0e0;
+        margin-top: auto;
+        text-align: center;
+        padding: 20px;
+      }
+
+      /* Apple Pay Button Styling */
+      .apple-pay-btn {
+        background: #000000;
+        border-radius: 5px;
+        color: white;
+        padding: 20px;
+        font-weight: bold;
+        width: 100%;
+        max-width: 400px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .apple-pay-btn:hover {
+        background: #333333;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="support.html">Support</a>
+    </nav>
+
+    <div class="content">
+      <h1>Payment</h1>
+
+      <div class="payment-container">
+        <p>Select your preferred payment method to complete your purchase.</p>
+
+        <!-- Apple Pay Button (Example, real implementation requires backend) -->
+        <button class="apple-pay-btn" id="apple-pay-button">
+          Pay with Apple Pay
+        </button>
+
+        <p>By clicking the button above, you will be redirected to Apple Pay for payment.</p>
+      </div>
+    </div>
+
+    <footer>&copy; 2024 ShadowMods Pro. All rights reserved.</footer>
+
+    <script>
+      // Example of Apple Pay button setup (real implementation requires backend integration)
+      if (window.ApplePaySession) {
+        document.getElementById("apple-pay-button").addEventListener("click", function () {
+          const paymentRequest = {
+            countryCode: 'US', // The country of the merchant
+            currencyCode: 'USD', // The currency of the transaction
+            total: {
+              label: 'CheatStore Purchase', // The store or item name
+              amount: '50.00' // The total price of the purchase
+            }
+          };
+
+          const session = new ApplePaySession(3, paymentRequest); // Version 3 of Apple Pay session
+
+          session.onvalidatemerchant = function (event) {
+            // Send the event validation to your server for Apple Pay merchant validation
+            fetch('/validate-merchant', {
+              method: 'POST',
+              body: JSON.stringify({ validationUrl: event.validationURL })
+            })
+              .then((response) => response.json())
+              .then((merchantSession) => {
+                session.completeMerchantValidation(merchantSession);
+              });
+          };
+
+          session.onpaymentauthorized = function (event) {
+            // Send the payment token to your server for processing
+            fetch('/process-payment', {
+              method: 'POST',
+              body: JSON.stringify({ paymentToken: event.payment.token })
+            })
+              .then((response) => response.json())
+              .then((result) => {
+                if (result.success) {
+                  session.completePayment(ApplePaySession.STATUS_SUCCESS);
+                  alert('Payment successful!');
+                } else {
+                  session.completePayment(ApplePaySession.STATUS_FAILURE);
+                  alert('Payment failed. Please try again.');
+                }
+              });
+          };
+
+          session.begin();
+        });
+      } else {
+        document.getElementById("apple-pay-button").style.display = 'none';
+        alert('Apple Pay is not supported on this device.');
+      }
+    </script>
+  </body>
+</html>
